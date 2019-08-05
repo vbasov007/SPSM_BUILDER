@@ -1,0 +1,12 @@
+
+CALL bat_config.bat
+
+SET BACKUP_DIR=%IFX_XML_SOURCE_PATH%\%date:~-10,2%"-"%date:~7,2%"-"%date:~-4,4%__%time:~0,2%_%time:~3,2%_%time:~6,2%
+mkdir "%BACKUP_DIR%"
+
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_ISPNS%*.xml" "%BACKUP_DIR%"
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_PRODUCTS%*.xml" "%BACKUP_DIR%"
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_PARAMETERS%*.xml" "%BACKUP_DIR%"
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_DOCUMENTS%*.xml" "%BACKUP_DIR%"
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_DOCUMENTS_ASSIGNMENT%*.xml" "%BACKUP_DIR%"
+move /Y "%IFX_XML_SOURCE_PATH%\%IFX_PRODUCT_HIERARCHY%*.xml" "%BACKUP_DIR%"

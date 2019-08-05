@@ -1,0 +1,19 @@
+
+set tool_root=%cd%
+
+SET IFX_ISPNS=IspnsExportJob
+SET IFX_PRODUCTS=ProductHierarchyExportJob
+SET IFX_PARAMETERS=IspnParametersExportJob
+SET IFX_DOCUMENTS=DocumentsExportJob
+SET IFX_DOCUMENTS_ASSIGNMENT=DocumentAssignmentsExportJob
+SET IFX_PRODUCT_HIERARCHY=ProductHierarchyExportJob
+
+SET IFX_XML_PARSER_PATH=%tool_root%\ifx_xml_parser
+SET IFX_XML_SOURCE_PATH=%tool_root%\xml_sources
+SET IFX_XML2EXCEL_OUTPUT_PATH=%tool_root%\temp
+SET IFX_XML2EXCEL_OUTPUT_FN=%IFX_XML2EXCEL_OUTPUT_PATH%\xml2excel.xlsx
+SET IFX_MAKE_TABLES_INPUT_FILE=%IFX_XML2EXCEL_OUTPUT_FN%
+SET IFX_MAKE_TABLES_WORK_FOLDER=%tool_root%\data_excel
+SET IFX_BUILD_HTML_INPUT_FOLDER=%IFX_MAKE_TABLES_WORK_FOLDER%
+SET IFX_BUILD_HTML_OUTPUT_FOLDER=%tool_root%\data_html
+SET IFX_HTML_BUILDER_PATH=%tool_root%\product_selection_guide_builder
