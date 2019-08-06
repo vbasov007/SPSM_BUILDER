@@ -1,6 +1,6 @@
 from error import Error
 from xml_parsing import xml2dict
-from mylogger import mylog
+# from mylogger import mylog
 
 
 class DocFilter:
@@ -20,7 +20,7 @@ class DocFilter:
     def is_english(self, item) -> bool:
         key = item['ObjectName']
         if key in self.doc_lang:
-            if self.doc_lang[key] == 'en':
+            if self.doc_lang[key] == 'en' or self.doc_lang[key] == 'en,de' or self.doc_lang[key] == 'de,en':
                 return True
 
         return False

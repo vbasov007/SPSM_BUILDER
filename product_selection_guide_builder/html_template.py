@@ -89,8 +89,8 @@ class CompleteToolTemplate:
             <div id="search_input"> <input type="text" id="search_text" placeholder="Find in this table" size="30">
             </div>
             ${SwitchableContent}
-        <a id="download_zip_link" 
-        href=https://github.com/vbasov007/Infineon_Selection_Guide/archive/master.zip>Download for offline viewing</a>
+        <span id="last_update_date">Updated (DD/MM/YYYY): ${Date} </span><a id="download_zip_link" 
+        href=https://github.com/vbasov007/Infineon_Selection_Guide/archive/master.zip>Download the latest version!</a>
         <script type="text/javascript" src="assets/js/startup.js"></script>
         <script type="text/javascript" src="assets/js/productpageurl.js"></script>
         </div>
@@ -105,9 +105,13 @@ class CompleteToolTemplate:
         self.switchable_content.add_level_caption(2, '')
 
         self.main_menu = ''
+        self.date_str = ''
 
     def add_table(self, html):
         self.switchable_content.add_table(html)
+
+    def add_date_info(self, date_str):
+        self.date_str = date_str
 
     def add_main_menu_html(self, main_menu: str):
         self.main_menu = main_menu
@@ -116,5 +120,6 @@ class CompleteToolTemplate:
         return self.html.substitute(
             Page_Title="Smart Product Selection Map - Infineon Technologies",
             MainMenu=self.main_menu,
+            Date=self.date_str,
             SwitchableContent=self.switchable_content.make(),
         )
