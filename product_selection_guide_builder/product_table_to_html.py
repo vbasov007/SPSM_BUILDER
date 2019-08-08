@@ -8,6 +8,40 @@ from html_builder import tree_to_html, table_to_html
 from argument_parsing_utility import arg_to_header
 
 
+def filtered_product_table(df, *,
+                           exclude,
+                           include_only,
+                           match,
+                           alias_to_col_name_dict=None):
+    a_include_only = []
+    a_exclude = []
+
+    if len(include_only) > 0:
+        a_include_only = include_only.split(';')
+
+    if len(exclude) > 0:
+        a_exclude = exclude.split(';')
+
+    a_match = match
+
+    header_dict = alias_to_col_name_dict
+    header_list = df.columns.values.tolist()
+
+    for a in a_include_only:
+        col, val = parse_col_equal_to_list_argument(a)
+        df = include_only_data(df, arg_to_header(col, header_dict, header_list), val)
+
+    for a in a_exclude:
+        col, val = parse_col_equal_to_list_argument(a)
+        df = exclude_data(df, arg_to_header(col, header_dict, header_list), val)
+
+    if a_match:
+        col, val = parse_col_equal_to_list_argument(a_match)
+        df = include_if_match_string(df, arg_to_header(col, header_dict, header_list), val[0])
+
+    return df
+
+
 def product_table_to_html(df, *,
                           category,
                           subcategory,
