@@ -18,11 +18,10 @@ SET IFX_BUILD_HTML_INPUT_FOLDER=%IFX_MAKE_TABLES_WORK_FOLDER%
 SET IFX_BUILD_HTML_OUTPUT_FOLDER=%tool_root%\data_html
 SET IFX_HTML_BUILDER_PATH=%tool_root%\product_selection_guide_builder
 
-CD ..
-SET SMPS_TOOL_PATH=%cd%\SMPS_TOOL
-CD %tool_root%
+rem CD ..
+rem SET SMPS_TOOL_PATH=%cd%\SMPS_TOOL
+rem CD %tool_root%
 
-echo %SMPS_TOOL_PATH%
 
 @echo off
 rem setlocal
@@ -41,3 +40,5 @@ rem echo %_day%/%_month%/%_year%
 rem endlocal
 
 SET DATE_DD_MM_YYYY=%_day%/%_month%/%_year%
+
+echo %DATE_DD_MM_YYYY%

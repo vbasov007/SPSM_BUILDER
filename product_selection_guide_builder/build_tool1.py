@@ -18,10 +18,10 @@ Options:
 from docopt import docopt
 import os
 from html_template import CompleteToolTemplate, MainMenuTemplate
-from product_table_to_html import product_table_to_html
+from product_table_to_html import product_table_to_html, selected_products
 from printing_utility import print_header_value_variation_stat
 
-from excel import read_excel
+from excel import read_excel, update_excel_sheet
 
 from mylogger import mylog
 
@@ -46,9 +46,13 @@ def build_tool1():
         input_file_full_path = os.path.join(input_folder, input_file_name)
 
         config_df, error = read_excel(input_file_full_path, replace_nan='', sheet_name='html_config')
-
         if error:
-            mylog.error(error)
+            mylog.error("Can't process file {0} - sheet html_config: {1}".format(input_file_full_path, error))
+            continue
+
+        products_df, error = read_excel(input_file_full_path, replace_nan='', sheet_name='Data')
+        if error:
+            mylog.error("Can't process file {0} - sheet Data: {1}".format(input_file_full_path, error))
             continue
 
         config_dict = config_df.to_dict('index')
@@ -68,13 +72,12 @@ def build_tool1():
                 output_files_dict.update({output_file_name: CompleteToolTemplate()})
                 main_menu.add_item(row['main_menu_item'], output_file_name)
 
+        processed_ispn_list = []
         for i in row_index_list:
 
             row = config_dict[i]
 
             mylog.debug("Open data: {0} - {1}".format(input_file_full_path, 'Data'))
-
-            df, _ = read_excel(input_file_full_path, replace_nan='', sheet_name='Data')
 
             alias_to_col_name_dict = None
             try:
@@ -93,10 +96,19 @@ def build_tool1():
 
             if args['--print']:
                 mylog.debug(row)
-                print_header_value_variation_stat(df)
+                print_header_value_variation_stat(products_df)
+
+            selected_products_df = selected_products(products_df,
+                                                     exclude=row['exclude'],
+                                                     include_only=row['include_only'],
+                                                     match=row['match'],
+                                                     alias_to_col_name_dict=alias_to_col_name_dict
+                                                     )
+
+            processed_ispn_list.extend(selected_products_df['Ispn'].tolist())
 
             table_html = product_table_to_html(
-                df,
+                selected_products_df,
                 category=row['category'],
                 subcategory=row['subcategory'],
                 view_name=row['view'],
@@ -106,13 +118,19 @@ def build_tool1():
                 datasheet_url=row['datasheet_url'],
                 view_type=row['view_type'],
                 product_page_url=row['product_page_url'],
-                exclude=row['exclude'],
-                include_only=row['include_only'],
-                match=row['match'],
                 alias_to_col_name_dict=alias_to_col_name_dict)
 
             template = output_files_dict[row['output_html']]
             template.add_table(table_html)
+
+        #  mark processed Ispns
+        mylog.info("Marking processed {0} Ispns...".format(len(processed_ispn_list)))
+        products_df['_processed'] = ''
+        products_df.loc[products_df['Ispn'].isin(processed_ispn_list), '_processed'] = 'Y'
+        error = update_excel_sheet('Data', input_file_full_path, products_df, prompt=True,
+                                   convert_strings_to_urls=False)
+        if error:
+            mylog.error("Can't update {0} with processed Ispns marks".format(input_file_full_path))
 
     mylog.debug(output_files_dict)
 

@@ -7,14 +7,13 @@ CALL venv\Scripts\activate
 
 IF "%~1"=="" goto :use_default
 
-build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOLDER%" -d "%DATE_DD_MM_YYYY%" -f %~1
+python build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOLDER%" -d "%DATE_DD_MM_YYYY%" -f %~1
 
 GOTO :finish
 
 :use_default
 
-
-build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOLDER%" -d "%DATE_DD_MM_YYYY%" ^
+python build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOLDER%" -d "%DATE_DD_MM_YYYY%" ^
 		-f igbt_modules.xlsx ^
 		-f mosfets.xlsx ^
 		-f igbt_descrete.xlsx
@@ -22,5 +21,6 @@ build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOL
 :finish
 
 CALL venv\Scripts\deactivate
+
 
 CD ..

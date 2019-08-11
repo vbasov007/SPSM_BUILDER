@@ -16,7 +16,7 @@ class ProductTableBuilder:
 
     def add_step(self, *, step_name: str, destination_col: str = '', source_cols: tuple = (), proc, **options):
         if step_name in self.steps:
-            raise Exception('Step {0} already exist')
+            raise Exception('Step {0} already exist'.format(step_name))
 
         self.steps[step_name] = {'destination_col': destination_col,
                                  'source_cols': source_cols,

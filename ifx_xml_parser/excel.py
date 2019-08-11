@@ -61,12 +61,15 @@ def write_excel(file_name: str,
     return error
 
 
-def add_new_sheet_to_excel(new_sheet_name: str, file_name: str, df: pd.DataFrame, prompt=False,
-                           convert_strings_to_urls=True, new_sheet_position='current') -> Error:
-    if new_sheet_position not in ('first', 'last', 'current'):
-        return Error('Undefined sheet insert position')
+def update_excel_sheet(updated_sheet_name: str, file_name: str, df: pd.DataFrame, prompt=False,
+                       convert_strings_to_urls=True) -> Error:
 
-    sheet_list, error = read_sheet_names(file_name)
+    original_sheet_list, error = read_sheet_names(file_name)
+
+    #  overwrite first sheet if updates_sheet_name is empty
+    if len(updated_sheet_name) == 0:
+        updated_sheet_name = original_sheet_list[0]
+
     if error:
         # file doesn't exist yet, try to create new
         mylog.warning("File {0} doesn't exist. Creating new".format(file_name))
@@ -74,25 +77,23 @@ def add_new_sheet_to_excel(new_sheet_name: str, file_name: str, df: pd.DataFrame
                             df,
                             prompt=prompt,
                             convert_strings_to_urls=convert_strings_to_urls,
-                            sheet_name=new_sheet_name)
+                            sheet_name=updated_sheet_name)
         return error
     else:
         # read all existing sheets
         excel_with_sheets_dict = OrderedDict()
 
-        if new_sheet_position == 'first':
-            excel_with_sheets_dict[new_sheet_name] = df
-
-        for sheet in sheet_list:
-            if new_sheet_position != 'current' and sheet == new_sheet_name:
-                continue
-            excel_with_sheets_dict[sheet], error = read_excel(file_name, replace_nan='', sheet_name=sheet)
+        # reading all sheets
+        for sheet in original_sheet_list:
+            next_sheet, error = read_excel(file_name, replace_nan='', sheet_name=sheet)
             if error:
-                mylog.error(error)
+                mylog.error("Can't read {0} - {1}: {2}".format(file_name, sheet, error))
+            else:
+                excel_with_sheets_dict[sheet] = next_sheet
 
-        if new_sheet_position == 'last':
-            excel_with_sheets_dict[new_sheet_name] = df
+        excel_with_sheets_dict[updated_sheet_name] = df
 
+        mylog.debug("excel_with_sheets_dict={0}".format(list(excel_with_sheets_dict)))
         error = write_excel(file_name,
                             excel_with_sheets_dict,
                             prompt=prompt,

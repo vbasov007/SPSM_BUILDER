@@ -8,11 +8,11 @@ from html_builder import tree_to_html, table_to_html
 from argument_parsing_utility import arg_to_header
 
 
-def filtered_product_table(df, *,
-                           exclude,
-                           include_only,
-                           match,
-                           alias_to_col_name_dict=None):
+def selected_products(df, *,
+                      exclude,
+                      include_only,
+                      match,
+                      alias_to_col_name_dict=None):
     a_include_only = []
     a_exclude = []
 
@@ -52,9 +52,6 @@ def product_table_to_html(df, *,
                           view_type,
                           datasheet_url,
                           product_page_url,
-                          exclude,
-                          include_only,
-                          match,
                           alias_to_col_name_dict=None):
     a_tree_levels = turn_to_list(tree_attributes.split())
     a_annotations = turn_to_list(part_attributes.split())
@@ -64,20 +61,11 @@ def product_table_to_html(df, *,
     a_include_only = []
     a_exclude = []
 
-    if len(include_only) > 0:
-        a_include_only = include_only.split(';')
-
-    if len(exclude) > 0:
-        a_exclude = exclude.split(';')
-
-    a_match = match
-
     print("a_tree_levels:", a_tree_levels)
     print("a_annotations:", a_annotations)
     print("a_main_topic_name:", a_main_topic_name)
     print("a_include_only:", a_include_only)
     print("a_exclude:", a_exclude)
-    print("a_match:", a_match)
 
     df = df.astype(str)
 
@@ -95,10 +83,6 @@ def product_table_to_html(df, *,
     for a in a_exclude:
         col, val = parse_col_equal_to_list_argument(a)
         df = exclude_data(df, arg_to_header(col, header_dict, header_list), val)
-
-    if a_match:
-        col, val = parse_col_equal_to_list_argument(a_match)
-        df = include_if_match_string(df, arg_to_header(col, header_dict, header_list), val[0])
 
     root_node = TreeNode(a_main_topic_name)
 
@@ -125,6 +109,7 @@ def product_table_to_html(df, *,
 
     notes = []
 
+    html_data = ''
     if view_type == 'tree':
         table_to_tree(
             df,
