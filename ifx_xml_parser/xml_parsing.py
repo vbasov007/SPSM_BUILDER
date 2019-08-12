@@ -1,4 +1,5 @@
 from lxml.etree import iterparse
+import re
 import pandas as pd
 from error import Error
 from mylogger import mylog
@@ -26,7 +27,10 @@ def xml2list(file_name: str, *, progress_indicator=None, estimated_items_count=0
                 progress_indicator(count, estimated_items_count)
                 count += 1
         elif event == 'end' and elem.tag != 'item':
-            new_item.update({elem.tag: str(elem.text)})
+            # remove multiple spaces and store
+            tag = re.sub(r"\s\s+", " ", str(elem.tag))
+            text = re.sub(r"\s\s+", " ", str(elem.text))
+            new_item.update({tag: text})
 
     return item_list, Error(None)
 
