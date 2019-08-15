@@ -10,7 +10,6 @@ Options:
     -i --in_folder=INPUT_FOLDER
     -o --out_folder=OUTPUT_FOLDER
     -f --files=FILE                     list of configuration files
-    -p --print                          Print more information
     -d --date=DATE                      Update Date
 
 """
@@ -64,9 +63,6 @@ def build_tool1():
         for i in row_index_list:
             row = config_dict[i]
 
-            mylog.debug("ROW#{0}".format(i))
-            mylog.debug(row)
-
             output_file_name = row['output_html']
             if output_file_name not in output_files_dict:
                 output_files_dict.update({output_file_name: CompleteToolTemplate()})
@@ -89,15 +85,12 @@ def build_tool1():
                     return
 
                 alias_to_col_name_dict = aliases_to_dict(col_alias_df, 'alias')
-                print(alias_to_col_name_dict)
 
             except FileNotFoundError as e:
                 mylog.error(e)
 
-            if args['--print']:
-                mylog.debug(row)
-                print_header_value_variation_stat(products_df)
-
+            mylog.debug("exclude='{0}' include='{1}' match='{2}'".format(row['exclude'], row['include_only'],
+                                                                         row['match']))
             selected_products_df = selected_products(products_df,
                                                      exclude=row['exclude'],
                                                      include_only=row['include_only'],
@@ -107,21 +100,23 @@ def build_tool1():
 
             processed_ispn_list.extend(selected_products_df['Ispn'].tolist())
 
-            table_html = product_table_to_html(
-                selected_products_df,
-                category=row['category'],
-                subcategory=row['subcategory'],
-                view_name=row['view'],
-                main_topic=row['main_topic'],
-                tree_attributes=row['tree'],
-                part_attributes=row['attributes'],
-                datasheet_url=row['datasheet_url'],
-                view_type=row['view_type'],
-                product_page_url=row['product_page_url'],
-                alias_to_col_name_dict=alias_to_col_name_dict)
-
-            template = output_files_dict[row['output_html']]
-            template.add_table(table_html)
+            mylog.debug("Build html for '{0}' -> '{1}' -> '{2}'".format(row['category'], row['subcategory'], row['view']))
+            table_html, error = product_table_to_html(selected_products_df,
+                                                      category=row['category'],
+                                                      subcategory=row['subcategory'],
+                                                      view_name=row['view'],
+                                                      main_topic=row['main_topic'],
+                                                      tree_attributes=row['tree'],
+                                                      part_attributes=row['attributes'],
+                                                      datasheet_url=row['datasheet_url'],
+                                                      view_type=row['view_type'],
+                                                      product_page_url=row['product_page_url'],
+                                                      alias_to_col_name_dict=alias_to_col_name_dict)
+            if error:
+                mylog.error(error)
+            else:
+                template = output_files_dict[row['output_html']]
+                template.add_table(table_html)
 
         #  mark processed Ispns
         mylog.info("Marking processed {0} Ispns...".format(len(processed_ispn_list)))

@@ -16,7 +16,9 @@ GOTO :finish
 python build_tool1.py -i "%IFX_BUILD_HTML_INPUT_FOLDER%" -o "%IFX_BUILD_HTML_OUTPUT_FOLDER%" -d "%DATE_DD_MM_YYYY%" ^
 		-f igbt_modules.xlsx ^
 		-f mosfets.xlsx ^
-		-f igbt_descrete.xlsx
+		-f igbt_descrete.xlsx ^
+		-f ipm_imotion_other_motor_control.xlsx ^
+		-f gate_drivers.xlsx
 		
 :finish
 

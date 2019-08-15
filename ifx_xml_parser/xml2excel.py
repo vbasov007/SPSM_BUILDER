@@ -100,7 +100,12 @@ def main():
     merged_df = pd.merge(ispn_df, ispn_param_df, on='Ispn', suffixes=('_1', '_2'))
     merged_df = pd.merge(merged_df, doc_info_df, on='Ispn', suffixes=('_3', '_4'))
 
-    error = write_excel(os.path.join(folder_name, output_fn), merged_df, prompt=True, convert_strings_to_urls=False)
+    # merged_df.replace("", "no_data", inplace=True)
+
+    error = write_excel(os.path.join(folder_name, output_fn),
+                        merged_df,
+                        prompt=True,
+                        convert_strings_to_urls=False)
     if error:
         print("Can't write excel file. {0}".format(error))
 

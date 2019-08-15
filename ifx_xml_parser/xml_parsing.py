@@ -36,6 +36,9 @@ def xml2list(file_name: str, *, progress_indicator=None, estimated_items_count=0
 
 
 def ispn_xml_parameters_to_str(param: dict) -> str:
+    def isdigit(s: str) -> bool:
+        return s.replace('.', '', 1).isdigit()
+
     if param['DataType'] == 'TEXT':
         return param['ValueChar']
 
@@ -46,10 +49,17 @@ def ispn_xml_parameters_to_str(param: dict) -> str:
         return "{0}..{1} {2}".format(param['ValueMin'],
                                      param['ValueMax'],
                                      param['Unit'])
-    return "{0}{1}{2} {3}".format(param['ValueNumeric'],
-                                  param['ValueMin'],
-                                  param['ValueMax'],
-                                  param['Unit'])
+
+    if isdigit(param['ValueNumeric']):
+        chosen_value = param['ValueNumeric']
+    elif isdigit(param['ValueMin']):
+        chosen_value = param['ValueMin']
+    elif isdigit(param['ValueMax']):
+        chosen_value = param['ValueMax']
+    else:
+        chosen_value = '-'
+
+    return "{0} {1}".format(chosen_value, param['Unit'])
 
 
 def document_ref_to_str(param: dict) -> str:

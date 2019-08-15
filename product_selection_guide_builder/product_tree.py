@@ -2,17 +2,17 @@ import pandas as pd
 from validators import url as is_url
 from dataframe_proc_utility import variations, take_only, annotations_with_title, get_single_col_value, count_rows
 from html_format_utility import span_format, format_multiline_annot, format_val_with_measure_units_html
+from error import Error
 
 
-def table_to_tree(
-        df, tree_level_names, parent_node,
-        last_level_annotations,
-        pop_up_notes,
-        datasheet_url_col_name=None,
-        product_page_url_col_name=None
-):
+def table_to_tree(df, tree_level_names, parent_node,
+                  last_level_annotations,
+                  pop_up_notes,
+                  datasheet_url_col_name=None,
+                  product_page_url_col_name=None
+                  ) -> Error:
     if df.empty:
-        return
+        return Error('Empty dataframe in table_to_tree')
 
     conditions = variations(df, tree_level_names[0])
     for c in conditions:
@@ -61,7 +61,7 @@ def table_to_tree(
 
             new_node.set_flag_new(flag_new_product)
 
-    return
+    return Error(None)
 
 
 def parameter_names_tree(tree_level_names, attach_to_node):
@@ -76,7 +76,12 @@ def table_to_short_table(df, *,
                          ispn_col_name,
                          datasheet_url_col_name,
                          product_page_url_col_name,
-                         new_product_col_name):
+                         new_product_col_name) -> (pd.DataFrame, Error):
+    # check duplicates in the list of columns, because it leads to crash in pandas
+    duplicates = [x for n, x in enumerate(col_names_list) if x in col_names_list[:n]]
+    if len(duplicates) > 0:
+        return None, Error("Duplicated values in table column names: {0}".format(duplicates))
+
     out_df = df.copy()
 
     for index, row in out_df.iterrows():
@@ -98,8 +103,7 @@ def table_to_short_table(df, *,
                 value = span_format(col_name, value)
                 out_df.at[index, col_name] = value
 
-
-    return out_df
+    return out_df, Error(None)
 
 
 def formatted_product_link(product_name, page_url, datasheet_url):

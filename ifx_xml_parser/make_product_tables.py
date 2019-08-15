@@ -1,6 +1,6 @@
 """
 Usage:  make_product_tables.py [--source=FILE_XLSX] [--working_folder=FOLDER]
-        [--only=PRODUCT_GROUP] (--working_file=FILE_XLSX...)
+        [--only=PRODUCT_GROUP] [--mark_processed] (--working_file=FILE_XLSX...)
 
 
 Options:
@@ -8,6 +8,7 @@ Options:
   -s --source=FILE_XLSX                             Input xlsx database
   -r --working_folder=FOLDER                        Working folder [default: .]
   -o --only=PRODUCT_GROUP                           Do only one product group
+  -m --mark_processed                               Mark processed Ispns in source excel
   -w --working_file=FILE_XLSX...
 
 
@@ -76,15 +77,15 @@ def make_product_tables():
         processed_ispn_list.extend(working_df['Ispn'].tolist())
 
     # mark processed Ispns
-
-    mylog.info("Marking processes ispns...")
-    in_df['_processed'] = ''
-    in_df.loc[in_df['Ispn'].isin(processed_ispn_list), '_processed'] = 'Y'
-    mylog.info("Writing back to file {0}...".format(arg['--source']))
-    error = update_excel_sheet('', arg['--source'], in_df, prompt=True,
-                               convert_strings_to_urls=False)
-    if error:
-        mylog.error("Can't update {0} with processed Ispns marks".format(arg['--source']))
+    if arg['--mark_processed']:
+        mylog.info("Marking processes ispns...")
+        in_df['_processed'] = ''
+        in_df.loc[in_df['Ispn'].isin(processed_ispn_list), '_processed'] = 'Y'
+        mylog.info("Writing back to file {0}...".format(arg['--source']))
+        error = update_excel_sheet('', arg['--source'], in_df, prompt=True,
+                                   convert_strings_to_urls=False)
+        if error:
+            mylog.error("Can't update {0} with processed Ispns marks".format(arg['--source']))
 
 
 if __name__ == '__main__':

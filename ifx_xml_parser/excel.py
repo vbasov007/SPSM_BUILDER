@@ -63,7 +63,6 @@ def write_excel(file_name: str,
 
 def update_excel_sheet(updated_sheet_name: str, file_name: str, df: pd.DataFrame, prompt=False,
                        convert_strings_to_urls=True) -> Error:
-
     original_sheet_list, error = read_sheet_names(file_name)
 
     #  overwrite first sheet if updates_sheet_name is empty

@@ -146,6 +146,12 @@ def make_new_product_column(*, df: pd.DataFrame, destination_col: str, source_co
                 df.at[index, 'new_product'] = 'new'
 
 
+def append_string(*, df: pd.DataFrame, destination_col: str, source_cols: tuple, **options):
+    for index, _ in df.iterrows():
+        if len(df.at[index, destination_col]) > 0:
+            df.at[index, destination_col] += " " + source_cols[0]
+
+
 def do_nothing(*, df: pd.DataFrame, destination_col: str, source_cols: tuple, **options):
     del df
     del destination_col
