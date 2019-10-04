@@ -1,9 +1,10 @@
 # my source and generated files files
-*.xlsx
+temp/
 *.xml
 *.log
 *.html
 
+ifx_xml_parser/output/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

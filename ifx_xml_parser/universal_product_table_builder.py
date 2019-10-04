@@ -33,15 +33,18 @@ class ProductTableBuilder:
     def _do_single_step(self, name, df):
 
         proc = self.steps[name]['proc']
-        proc(df=df,
-             destination_col=self.steps[name]['destination_col'],
-             source_cols=self.steps[name]['source_cols'],
-             options=self.steps[name]['options'])
+        error = proc(df=df,
+                     destination_col=self.steps[name]['destination_col'],
+                     source_cols=self.steps[name]['source_cols'],
+                     options=self.steps[name]['options'])
+        return error
 
     def do_all_steps(self, df):
         for name in self.steps:
             mylog.info("Step {0}".format(name))
-            self._do_single_step(name, df)
+            error = self._do_single_step(name, df)
+            if error:
+                mylog.error("Step {0} is not completed. Error: {1}".format(name, error))
 
     def init_from_file(self, xlsx_file_path: str, sheet_name: str) -> Error:
 

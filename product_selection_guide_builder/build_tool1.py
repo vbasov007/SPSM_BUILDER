@@ -89,6 +89,12 @@ def build_tool1():
             except FileNotFoundError as e:
                 mylog.error(e)
 
+            mylog.debug(row)
+
+            row.setdefault('exclude', '')
+            row.setdefault('include_only', '')
+            row.setdefault('match', '')
+
             mylog.debug("exclude='{0}' include='{1}' match='{2}'".format(row['exclude'], row['include_only'],
                                                                          row['match']))
             selected_products_df = selected_products(products_df,

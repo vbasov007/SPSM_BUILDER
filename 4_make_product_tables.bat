@@ -18,7 +18,15 @@ python make_product_tables.py --source="%IFX_MAKE_TABLES_INPUT_FILE%" --working_
 	-w mosfets.xlsx ^
 	-w igbt_descrete.xlsx ^
 	-w ipm_imotion_other_motor_control.xlsx ^
-	-w gate_drivers.xlsx
+	-w gate_drivers.xlsx ^
+	-w switches.xlsx ^
+	-w sensors.xlsx ^
+	-w lighting_ics.xlsx ^
+	-w galium_nitride.xlsx ^
+	-w rf_devices.xlsx ^
+	-w esd_surge.xlsx ^
+	-w power_management_ics.xlsx ^
+	-w sic_schottky_diodes.xlsx
 
 
 :finish

@@ -1,5 +1,9 @@
 import pandas as pd
+from pandas import DataFrame
+
 from error import Error
+
+from mylogger import mylog
 
 
 def selected_products_only(in_df: pd.DataFrame, *,
@@ -12,18 +16,22 @@ def selected_products_only(in_df: pd.DataFrame, *,
     return res_df, Error(None)
 
 
-def remove_useless_columns(in_df: pd.DataFrame) -> (pd.DataFrame, Error):
-    res_df = in_df.dropna(axis=1, how='all', inplace=False)
+# def remove_useless_columns(in_df: pd.DataFrame) -> (pd.DataFrame, Error):
+#    res_df: DataFrame = in_df.dropna(axis=1, how='all', inplace=False)
 
-    remove_list = []
-    for col in res_df:
-        if res_df[col].nunique() == 1:
-            remove_list.append(col)
+# remove_list = []
+# for col in res_df:
+#    if res_df[col].nunique() == 1:
+#       remove_list.append(col)
 
-    for col in remove_list:
-        res_df.drop(col, 1, inplace=True)
+# for col in remove_list:
+#    res_df.drop(col, 1, inplace=True)
 
-    return res_df, Error(None)
+#   res_df = res_df.loc[:, (res_df != '').any(axis=0)]
+
+#   mylog.debug("Dropped empty columns. Remaining columns: {0}".format(list(res_df.columns)))
+
+#   return res_df, Error(None)
 
 
 def arrange_columns_in_order(in_df: pd.DataFrame,
